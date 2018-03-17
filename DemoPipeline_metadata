@@ -1,0 +1,17 @@
+{
+  "name": "DemoPipeline",
+  "description": "A Demo Pipeline to upload data to BigQuery from CSV files.",
+  "parameters": [{
+    "name": "inputPath",
+    "label": "Input of Cloud Storage File(s)",
+    "help_text": "Path of the file pattern glob to read from.",
+    "regexes": ["^gs:\/\/[^\n\r]+$"],
+    "is_optional": true
+  },
+  {
+    "name": "output",
+    "label": "Output Cloud Storage File Prefix - Not needed for BigQuery",
+    "help_text": "Path and filename prefix for writing output files. ex: gs://MyBucket/output",
+    "regexes": ["^gs:\/\/[^\n\r]+$"]
+  }]
+}
