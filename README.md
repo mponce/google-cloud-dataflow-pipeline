@@ -36,7 +36,7 @@ A sample project structure for data, staging and templates could be:
 
 **Storage Structure:**
 ```text
-- <PROJECT-ID>/
+- <PROJECT_ID>/
      +---/data/
          +---/products.csv
      +---/staging/ (If you remove this folder running the Template will fail)
@@ -66,3 +66,4 @@ Upload the file ```DemoPipeline_metadata``` to your Cloud Storage template locat
 Login to GCP console under **DataFlow** service create a new job from *Custom Template* and select **DemoPipeline** the template from the ```<PROJECT_ID>/templates``` folder. The Dataflow UI will read the **DemoPipeline_metadata** file (previously uploaded) to render the input parameters. Fill in those parameters and Run the job. 
 
 If all goes well you should be able to see the Job status (running, processed etc.) and options to see the Job *LOGS*.
+
