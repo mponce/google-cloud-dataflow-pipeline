@@ -50,11 +50,11 @@ For example under the your project Storage create a directory structure for data
 
 ```bash
 mvn compile exec:java -Dexec.mainClass=com.example.DemoPipeline -Dexec.args="--project=<PROJECT_ID> \
+    --jobName=<JOB_NAME> \
     --stagingLocation=gs://<PROJECT_ID>/staging \
-    --output=gs://<PROJECT_ID>/output \
-    --jobName=<ANY_JOB_NAME> \
-    --templateLocation=gs://<PROJECT_ID>/templates/DemoPipeline
-    --runner=DataflowRunner"  
+    --output=<PROJECT_ID>:<BIG_QUERY_DATASET_NAME>.<TABLE_NAME> \
+    --runner=DataflowRunner"  \
+    --templateLocation=gs://<PROJECT_ID>/templates/DemoPipeline <-- optional: use only if later want to run from UI!
 ```
 
 ### Template Metadata

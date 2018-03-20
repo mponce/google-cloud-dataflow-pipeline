@@ -17,6 +17,9 @@
  */
 package com.example;
 
+import com.google.api.services.bigquery.model.TableFieldSchema;
+//import com.google.api.services.bigquery.model.TableReference;
+import com.google.api.services.bigquery.model.TableSchema;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
 import org.apache.beam.sdk.options.Description;
@@ -24,8 +27,15 @@ import org.apache.beam.sdk.options.PipelineOptions;
 import org.apache.beam.sdk.options.PipelineOptionsFactory;
 import org.apache.beam.sdk.options.Validation;
 import org.apache.beam.sdk.transforms.*;
+import org.apache.beam.sdk.values.PCollection;
+import org.apache.beam.sdk.io.gcp.bigquery.BigQueryIO;
+import com.google.api.services.bigquery.model.TableRow;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class DemoPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(DemoPipeline.class);
@@ -39,37 +49,50 @@ public class DemoPipeline {
         String getOutput();
         void setOutput(String value);
     }
-
+    
     /**
-     * Basic ParDo with DoFn transformation
+     * Converts a string to a tableRow
+     * input: String, output: TableRow
      */
-    static class PrintElement extends DoFn<String, Void> {
+    static class ConvertTextToRow extends DoFn<String, TableRow> {
         @ProcessElement
         public void processElement(ProcessContext c){
-            LOG.info(c.element());
+            TableRow row = new TableRow().set("column1", c.element());
+            c.output(row);
         }
     }
 
-    // public static UppercaseElements extends PTransform<String, String> {
-    //     @Override
-    //     public String apply(String input){
-    //         return input.toUppderCase();
-    //     }
-    // }
+    /**
+     * Prepares data for writing
+     */
+    static class PrepareTableData extends PTransform<PCollection<String>, PCollection<TableRow>> {
+
+        // table definition
+        static TableSchema getSchema(){
+            List<TableFieldSchema> fields = new ArrayList<>();
+            fields.add(new TableFieldSchema().setName("column1").setType("STRING"));
+            return new TableSchema().setFields(fields);
+        }
+
+        // table data
+        @Override
+        public PCollection<TableRow> expand(PCollection<String> stringPCollection) {
+            return stringPCollection.apply(ParDo.of(new ConvertTextToRow()));
+        }
+    }
 
     public static void main(String[] args) {
         MyOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(MyOptions.class);
         Pipeline p = Pipeline.create(options);
 
         p.apply(Create.of("Hello", "World"))
-                //.apply(TextIO.Read.from(inputFile)
-                .apply(MapElements.via(new SimpleFunction<String, String>() {
-                    @Override
-                    public String apply(String input) {
-                        return input.toUpperCase();
-                    }
-                }))
-                .apply("Print Elements", ParDo.of(new DemoPipeline.PrintElement()));
-        p.run();
+            .apply(new PrepareTableData())
+            .apply(BigQueryIO.writeTableRows()
+                    .withSchema(PrepareTableData.getSchema())
+                    .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
+                    .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)
+                    .to(options.getOutput()));
+
+        p.run().waitUntilFinish();
     }
 }
