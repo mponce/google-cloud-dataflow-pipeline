@@ -18,7 +18,6 @@
 package com.example;
 
 import com.google.api.services.bigquery.model.TableFieldSchema;
-//import com.google.api.services.bigquery.model.TableReference;
 import com.google.api.services.bigquery.model.TableSchema;
 import org.apache.beam.sdk.Pipeline;
 import org.apache.beam.sdk.io.TextIO;
@@ -39,8 +38,17 @@ import java.util.List;
 
 public class DemoPipeline {
     private static final Logger LOG = LoggerFactory.getLogger(DemoPipeline.class);
+    private static final String FIELD_SEPARATOR = ",";
 
     public interface MyOptions extends PipelineOptions {
+        /**
+         * Specify the location of CSV files
+         * For example: gs://my-project/input/**
+         */
+        @Description("Path of the CSV files to read from")
+        String getInputFile();
+        void setInputFile(String value);
+
         /**
          * Set this required option to specify where to write the output.
          */
@@ -57,7 +65,14 @@ public class DemoPipeline {
     static class ConvertTextToRow extends DoFn<String, TableRow> {
         @ProcessElement
         public void processElement(ProcessContext c){
-            TableRow row = new TableRow().set("column1", c.element());
+            String[] columns = { "ID", "DESCRIPTION", "PRICE" };
+            String[] data = c.element().split(FIELD_SEPARATOR);
+            TableRow row = new TableRow();
+            int i = 0;
+            for (String elem : data){
+                row.set(columns[i], elem);
+                i++;
+            }
             c.output(row);
         }
     }
@@ -70,7 +85,9 @@ public class DemoPipeline {
         // table definition
         static TableSchema getSchema(){
             List<TableFieldSchema> fields = new ArrayList<>();
-            fields.add(new TableFieldSchema().setName("column1").setType("STRING"));
+            fields.add(new TableFieldSchema().setName("ID").setType("STRING"));
+            fields.add(new TableFieldSchema().setName("DESCRIPTION").setType("STRING"));
+            fields.add(new TableFieldSchema().setName("PRICE").setType("STRING"));
             return new TableSchema().setFields(fields);
         }
 
@@ -85,9 +102,9 @@ public class DemoPipeline {
         MyOptions options = PipelineOptionsFactory.fromArgs(args).withValidation().as(MyOptions.class);
         Pipeline p = Pipeline.create(options);
 
-        p.apply(Create.of("Hello", "World"))
-            .apply(new PrepareTableData())
-            .apply(BigQueryIO.writeTableRows()
+        p.apply("ReadLines", TextIO.read().from(options.getInputFile()))
+            .apply("PrepareToWrite",new PrepareTableData())
+            .apply("WriteData",BigQueryIO.writeTableRows()
                     .withSchema(PrepareTableData.getSchema())
                     .withCreateDisposition(BigQueryIO.Write.CreateDisposition.CREATE_IF_NEEDED)
                     .withWriteDisposition(BigQueryIO.Write.WriteDisposition.WRITE_TRUNCATE)

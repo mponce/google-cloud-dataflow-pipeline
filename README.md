@@ -30,16 +30,15 @@ gcloud config set project <YOUR CLOUD PLATFORM PROJECT ID>
 
 To run this demo you need to have your GCP account setup. This code can run from the developer machine on the GCP or from local system with the GCP SDK installed. 
 
-You will also need to have some data in your Cloud Storage in CSV format to load to BigQuery. There is some sample data in the data folder of this project for reference.  
+You will also need to have some data in your Cloud Storage in CSV format to load to BigQuery. For DemoPipeline there is a sample ```products.csv``` in the ```data``` folder of this repo.  
 
-For example under the your project Storage create a directory structure for data, staging and templates.
+A sample project structure for data, staging and templates could be:
 
 **Storage Structure:**
 ```text
 - <PROJECT-ID>/
      +---/data/
          +---/products.csv
-             /customers.csv
      +---/staging/ (If you remove this folder running the Template will fail)
      +---/templates/
          +---/DemoPipeline (this will be created by mvn compile command line)
@@ -51,8 +50,9 @@ For example under the your project Storage create a directory structure for data
 ```bash
 mvn compile exec:java -Dexec.mainClass=com.example.DemoPipeline -Dexec.args="--project=<PROJECT_ID> \
     --jobName=<JOB_NAME> \
-    --stagingLocation=gs://<PROJECT_ID>/staging \
+    --inputFile=gs://<PROJECT_ID>/products.csv \
     --output=<PROJECT_ID>:<BIG_QUERY_DATASET_NAME>.<TABLE_NAME> \
+    --stagingLocation=gs://<PROJECT_ID>/staging \
     --runner=DataflowRunner"  \
     --templateLocation=gs://<PROJECT_ID>/templates/DemoPipeline <-- optional: use only if later want to run from UI!
 ```
