@@ -59,8 +59,9 @@ public class SimplePipeline {
     }
     
     /**
-     * Converts a string to a tableRow
-     * input: String, output: TableRow
+     * Converts a String element to a TableRow element.
+     * input: String
+     * output: TableRow
      */
     static class ConvertTextToRow extends DoFn<String, TableRow> {
         @ProcessElement
@@ -78,11 +79,13 @@ public class SimplePipeline {
     }
 
     /**
-     * Prepares data for writing
+     * A Transformation to prepare data for writing to BigQuery
+     * input: PCollection<String>
+     * output: PCollection<TableRow>
      */
     static class PrepareTableData extends PTransform<PCollection<String>, PCollection<TableRow>> {
 
-        // table definition
+        // BigQuery output table definition
         static TableSchema getSchema(){
             List<TableFieldSchema> fields = new ArrayList<>();
             fields.add(new TableFieldSchema().setName("ID").setType("STRING"));
@@ -91,7 +94,7 @@ public class SimplePipeline {
             return new TableSchema().setFields(fields);
         }
 
-        // table data
+        // Apply a ParDo Transformation to convert each String row to TableRow
         @Override
         public PCollection<TableRow> expand(PCollection<String> stringPCollection) {
             return stringPCollection.apply(ParDo.of(new ConvertTextToRow()));
