@@ -47,19 +47,27 @@ A sample project structure for data, staging and templates could be:
 
 ### Compile and Run
 
+Replace the parameters below and run it from the command line:
+
 ```bash
 mvn compile exec:java -Dexec.mainClass=com.example.SimplePipeline -Dexec.args="--project=<PROJECT_ID> \
     --jobName=<JOB_NAME> \
-    --inputFile=gs://<PROJECT_ID>/products.csv \
-    --output=<PROJECT_ID>:<BIG_QUERY_DATASET_NAME>.<TABLE_NAME> \
+    --inputFile=gs://<PROJECT_ID>/csv/products.csv \
+    --output=<PROJECT_ID>:<BIGQUERY_DATASET_NAME>.<BIGQUERY_TABLE_NAME> \
+    --tempLocation=gs://<PROJECT_ID>/temp \
     --stagingLocation=gs://<PROJECT_ID>/staging \
-    --runner=DataflowRunner"  \
-    --templateLocation=gs://<PROJECT_ID>/templates/SimplePipeline <-- optional: use only if later want to run from UI!
+    --runner=DataflowRunner" 
+```
+
+Run the ```mvn``` command again with ```--templateLocation``` parameter to save the template in a storage location. The log will show a line with ```INFO: Template successfully created.``` You might get a NullPointerException error but it will still create the template. 
+
+```bash
+    --templateLocation=gs://<PROJECT_ID>/templates/SimplePipeline 
 ```
 
 ### Template Metadata
 
-Upload the file ```SimplePipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` this will help the DataFlow UI automatically display the parameters required to run our SimplePipeline.
+Upload the file ```SimplePipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` (the same location specified by ```--templateLocation parameter```) this will help the DataFlow UI automatically display the parameters required to run our SimplePipeline.
 
 ### Run from DataFlow UI
 
