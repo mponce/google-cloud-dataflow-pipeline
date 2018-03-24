@@ -59,7 +59,7 @@ mvn compile exec:java -Dexec.mainClass=com.example.SimplePipeline -Dexec.args="-
     --runner=DataflowRunner" 
 ```
 
-Run the ```mvn``` command again with ```--templateLocation``` parameter to save the template in a storage location. The log will show a line with ```INFO: Template successfully created.``` You might get a NullPointerException error but it will still create the template. 
+Run the ```mvn``` command again this time adding ```--templateLocation``` parameter to save the template in a storage location. The log will show a line with ```INFO: Template successfully created.``` You might get a NullPointerException error but it will still create the template. 
 
 ```bash
     --templateLocation=gs://<PROJECT_ID>/templates/SimplePipeline 
