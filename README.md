@@ -67,7 +67,7 @@ Run the ```mvn``` command again this time adding ```--templateLocation``` parame
 
 ### Template Metadata
 
-Upload the file ```SimplePipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` (the same location specified by ```--templateLocation parameter```) this will help the DataFlow UI automatically display the parameters required to run our SimplePipeline.
+Upload the file ```SimplePipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` (the same location specified by ```--templateLocation``` parameter) this will help the DataFlow UI automatically display the parameters required to run our SimplePipeline.
 
 ### Run from DataFlow UI
 
