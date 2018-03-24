@@ -1,6 +1,6 @@
 {
-  "name": "DemoPipeline",
-  "description": "A Demo Pipeline to upload data to BigQuery from CSV files.",
+  "name": "SimplePipeline",
+  "description": "A Simple Pipeline to upload data to BigQuery from CSV files.",
   "parameters": [{
     "name": "inputFile",
     "label": "Input of Cloud Storage File",

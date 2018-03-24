@@ -36,8 +36,8 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DemoPipeline {
-    private static final Logger LOG = LoggerFactory.getLogger(DemoPipeline.class);
+public class SimplePipeline {
+    private static final Logger LOG = LoggerFactory.getLogger(SimplePipeline.class);
     private static final String FIELD_SEPARATOR = ",";
 
     public interface MyOptions extends PipelineOptions {

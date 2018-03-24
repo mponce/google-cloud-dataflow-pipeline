@@ -30,7 +30,7 @@ gcloud config set project <YOUR CLOUD PLATFORM PROJECT ID>
 
 To run this demo you need to have your GCP account setup. This code can run from the developer machine on the GCP or from local system with the GCP SDK installed. 
 
-You will also need to have some data in your Cloud Storage in CSV format to load to BigQuery. For DemoPipeline there is a sample ```products.csv``` in the ```data``` folder of this repo.  
+You will also need to have some data in your Cloud Storage in CSV format to load to BigQuery. For SimplePipeline there is a sample ```products.csv``` in the ```data``` folder of this repo.  
 
 A sample project structure for data, staging and templates could be:
 
@@ -41,29 +41,29 @@ A sample project structure for data, staging and templates could be:
          +---/products.csv
      +---/staging/ (If you remove this folder running the Template will fail)
      +---/templates/
-         +---/DemoPipeline (this will be created by mvn compile command line)
+         +---/SimplePipeline (this will be created by mvn compile command line)
      +---/output/
 ```
 
 ### Compile and Run
 
 ```bash
-mvn compile exec:java -Dexec.mainClass=com.example.DemoPipeline -Dexec.args="--project=<PROJECT_ID> \
+mvn compile exec:java -Dexec.mainClass=com.example.SimplePipeline -Dexec.args="--project=<PROJECT_ID> \
     --jobName=<JOB_NAME> \
     --inputFile=gs://<PROJECT_ID>/products.csv \
     --output=<PROJECT_ID>:<BIG_QUERY_DATASET_NAME>.<TABLE_NAME> \
     --stagingLocation=gs://<PROJECT_ID>/staging \
     --runner=DataflowRunner"  \
-    --templateLocation=gs://<PROJECT_ID>/templates/DemoPipeline <-- optional: use only if later want to run from UI!
+    --templateLocation=gs://<PROJECT_ID>/templates/SimplePipeline <-- optional: use only if later want to run from UI!
 ```
 
 ### Template Metadata
 
-Upload the file ```DemoPipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` this will help the DataFlow UI automatically display the parameters required to run our DemoPipeline.
+Upload the file ```SimplePipeline_metadata``` to your Cloud Storage template location ```<PROJECT_ID>/templates``` this will help the DataFlow UI automatically display the parameters required to run our SimplePipeline.
 
 ### Run from DataFlow UI
 
-Login to GCP console under **DataFlow** service create a new job from *Custom Template* and select **DemoPipeline** the template from the ```<PROJECT_ID>/templates``` folder. The Dataflow UI will read the **DemoPipeline_metadata** file (previously uploaded) to render the input parameters. Fill in those parameters and Run the job. 
+Login to GCP console under **DataFlow** service create a new job from *Custom Template* and select **SimplePipeline** the template from the ```<PROJECT_ID>/templates``` folder. The Dataflow UI will read the **SimplePipeline_metadata** file (previously uploaded) to render the input parameters. Fill in those parameters and Run the job. 
 
 If all goes well you should be able to see the Job status (running, processed etc.) and options to see the Job *LOGS*.
 
