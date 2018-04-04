@@ -107,7 +107,7 @@ public class DataPipeline {
         options.setTempLocation("gs://***REMOVED***/staging");
         options.setStagingLocation("gs://***REMOVED***/staging");
         options.setInputFile("gs://***REMOVED***/csv/products.csv");
-        options.setOutput("***REMOVED***.demo_dataset1.data_pipeline1");
+        options.setOutput("***REMOVED***:demo_dataset1.data_pipeline1");
         options.setRunner(DataflowRunner.class);
 
         // Create the Pipeline with the specified options.
