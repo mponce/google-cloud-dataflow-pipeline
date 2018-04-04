@@ -102,6 +102,14 @@ limitations under the License.
     </dependency>  
     <!---[END DATAFLOW] -->
 
+    <!-- LOGGING 
+    <dependency>
+      <groupId>com.google.cloud</groupId>
+      <artifactId>google-cloud-logging</artifactId>
+      <version>1.24.1</version>
+    </dependency>
+    -->
+
     <!--[START GCP APIs] -->
     <!-- Dependencies below this line are specific dependencies needed by the examples code. -->
     <dependency>

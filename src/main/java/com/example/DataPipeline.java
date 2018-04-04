@@ -34,7 +34,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataPipeline implements Runnable {
-    private static final Logger LOG = LoggerFactory.getLogger(DataPipeline.class);
+    private static final Logger logger = LoggerFactory.getLogger(DataPipeline.class);
     private static final String FIELD_SEPARATOR = ",";
 
     public interface MyOptions extends DataflowPipelineOptions {
@@ -84,6 +84,7 @@ public class DataPipeline implements Runnable {
 
         // BigQuery output table definition
         static TableSchema getSchema(){
+            logger.info("Getting BigQuery TableSchema");
             List<TableFieldSchema> fields = new ArrayList<>();
             fields.add(new TableFieldSchema().setName("ID").setType("STRING"));
             fields.add(new TableFieldSchema().setName("DESCRIPTION").setType("STRING"));
@@ -100,6 +101,8 @@ public class DataPipeline implements Runnable {
 
     public void run() {
 
+        logger.info("Starting DataPipeline");
+
         // Google Cloud DataFlow Options
         MyOptions options = PipelineOptionsFactory.as(MyOptions.class);
         options.setJobName("cloud-pipeline-101");
@@ -113,6 +116,8 @@ public class DataPipeline implements Runnable {
         // Create the Pipeline with the specified options.
         Pipeline p = Pipeline.create(options);
 
+        logger.info("Applying Transformations");
+
         // Apply Transformations
         p.apply("ReadLines", TextIO.read().from(options.getInputFile()))
                 .apply("PrepareToWrite",new PrepareTableData())
@@ -123,6 +128,7 @@ public class DataPipeline implements Runnable {
                         .to(options.getOutput()));
 
         // Run the Pipeline
+        logger.info("Running Pipeline");
         p.run();
     }
 }
