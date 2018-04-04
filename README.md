@@ -1,8 +1,8 @@
 ### Introduction
 
-This is a demo on how to load data into Google BigQuery using Google Cloud DataFlow pipelines.
+This is a demo on how to load data into Google BigQuery using Google Cloud [DataFlow](https://cloud.google.com/dataflow/) pipelines.
 
-Google Cloud DataFlow is an Apache Beam Pipeline runner. A Pipeline is a sequence of data transformations applied to PCollections of Elements of different ElementTypes.
+Google Cloud DataFlow is an Apache Beam Pipeline [runner](https://beam.apache.org/documentation/runners/capability-matrix/). A Pipeline is a sequence of data transformations applied to collections of elements of different types.
 
 ### Local SDK Setup
 
