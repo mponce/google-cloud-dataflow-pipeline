@@ -33,7 +33,7 @@ import org.slf4j.LoggerFactory;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DataPipeline {
+public class DataPipeline implements Runnable {
     private static final Logger LOG = LoggerFactory.getLogger(DataPipeline.class);
     private static final String FIELD_SEPARATOR = ",";
 
@@ -98,7 +98,7 @@ public class DataPipeline {
         }
     }
 
-    public static void run() {
+    public void run() {
 
         // Google Cloud DataFlow Options
         MyOptions options = PipelineOptionsFactory.as(MyOptions.class);

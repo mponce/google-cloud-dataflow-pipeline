@@ -1,288 +1,179 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  ~ Copyright (C) 2017 Google Inc.
-  ~
-  ~ Licensed under the Apache License, Version 2.0 (the "License"); you may not
-  ~ use this file except in compliance with the License. You may obtain a copy of
-  ~ the License at
-  ~
-  ~ http://www.apache.org/licenses/LICENSE-2.0
-  ~
-  ~ Unless required by applicable law or agreed to in writing, software
-  ~ distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
-  ~ WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
-  ~ License for the specific language governing permissions and limitations under
-  ~ the License.
-  ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<!--
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
-    <groupId>com.example</groupId>
-    <artifactId>dataflow-pipeline</artifactId>
-    <version>0.0.1</version>
+    http://www.apache.org/licenses/LICENSE-2.0
 
-    <packaging>war</packaging>
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+<!-- [START pom] -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <properties>
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <surefire-plugin.version>2.20</surefire-plugin.version>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <appengine.app.version>1</appengine.app.version>
-        <appengine.target.version>1.9.54</appengine.target.version>
-        <appengine-maven-plugin-version>1.3.1</appengine-maven-plugin-version>
-    </properties>
+  <modelVersion>4.0.0</modelVersion>
+  <!-- REQUIRED : your application must be packed as a .war to deploy on App Engine Standard -->
+  <packaging>war</packaging>
 
-    <repositories>
-        <repository>
-            <id>ossrh.snapshots</id>
-            <name>Sonatype OSS Repository Hosting</name>
-            <url>https://oss.sonatype.org/content/repositories/snapshots/</url>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-            <snapshots>
-                <enabled>true</enabled>
-            </snapshots>
-        </repository>
-    </repositories>
+  <groupId>com.example</groupId>
+  <artifactId>dataflow-pipeline</artifactId>
+  <version>1.0-SNAPSHOT</version>
 
-    <build>
-        <!--<outputDirectory>target/${project.artifactId}/WEB-INF/classes</outputDirectory>-->
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <version>3.5.1</version>
-                <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
-                </configuration>
-            </plugin>
+   <!-- [START properties] -->
+  <properties>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <maven.compiler.target>1.8</maven.compiler.target>
+    <!-- REQUIRED by appengine-maven-plugin plugin, if web.xml does not exist for your application -->
+    <failOnMissingWebXml>false</failOnMissingWebXml>
+  </properties>
+  <!-- [END properties] -->
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>2.3</version>
-                <configuration>
-                    <archiveClasses>true</archiveClasses>
-                    <webResources>
-                        <!-- in order to interpolate version from pom into appengine-web.xml -->
-                        <resource>
-                            <directory>${basedir}/src/main/webapp/WEB-INF</directory>
-                            <filtering>true</filtering>
-                            <targetPath>WEB-INF</targetPath>
-                        </resource>
-                    </webResources>
-                </configuration>
-            </plugin>
-            <plugin>
-                <groupId>com.google.cloud.tools</groupId>
-                <artifactId>appengine-maven-plugin</artifactId>
-                <version>${appengine-maven-plugin-version}</version>
-            </plugin>
+  <dependencies>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <version>${surefire-plugin.version}</version>
-                <configuration>
-                    <parallel>all</parallel>
-                    <threadCount>4</threadCount>
-                    <redirectTestOutputToFile>true</redirectTestOutputToFile>
-                </configuration>
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apache.maven.surefire</groupId>
-                        <artifactId>surefire-junit47</artifactId>
-                        <version>${surefire-plugin.version}</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
+    <!-- Compile/runtime dependencies -->
+    <!-- App Engine SDK dependency : only required if you need to explicitly use App Engine API -->
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-1.0-sdk</artifactId>
+      <version>1.9.63</version>
+    </dependency>
 
-            <!-- Ensure that the Maven jar plugin runs before the Maven
-              shade plugin by listing the plugin higher within the file. -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-jar-plugin</artifactId>-->
-                <!--<version>3.0.2</version>-->
-            <!--</plugin>-->
+    <!-- [START servlet] -->
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>3.1.0</version>
+      <type>jar</type>
+      <scope>provided</scope>
+    </dependency>
+    <!-- [END servlet] -->
 
-            <!--
-              Configures `mvn package` to produce a bundled jar ("fat jar") for runners
-              that require this for job submission to a cluster.
-            -->
-            <!--<plugin>-->
-                <!--<groupId>org.apache.maven.plugins</groupId>-->
-                <!--<artifactId>maven-shade-plugin</artifactId>-->
-                <!--<version>3.0.0</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>package</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>shade</goal>-->
-                        <!--</goals>-->
-                        <!--<configuration>-->
-                            <!--<finalName>${project.artifactId}-bundled-${project.version}</finalName>-->
-                            <!--<filters>-->
-                                <!--<filter>-->
-                                    <!--<artifact>*:*</artifact>-->
-                                    <!--<excludes>-->
-                                        <!--<exclude>META-INF/LICENSE</exclude>-->
-                                        <!--<exclude>META-INF/*.SF</exclude>-->
-                                        <!--<exclude>META-INF/*.DSA</exclude>-->
-                                        <!--<exclude>META-INF/*.RSA</exclude>-->
-                                    <!--</excludes>-->
-                                <!--</filter>-->
-                            <!--</filters>-->
-                            <!--<transformers>-->
-                                <!--<transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer"/>-->
-                            <!--</transformers>-->
-                        <!--</configuration>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-            <!--</plugin>-->
+    <!-- [START_EXCLUDE] -->
+    <!-- Test Dependencies -->
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-testing</artifactId>
+      <version>1.9.63</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-api-stubs</artifactId>
+      <version>1.9.63</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.appengine</groupId>
+      <artifactId>appengine-tools-sdk</artifactId>
+      <version>1.9.63</version>
+      <scope>test</scope>
+    </dependency>
 
-        </plugins>
+    <dependency>
+      <groupId>com.google.truth</groupId>
+      <artifactId>truth</artifactId>
+      <version>0.40</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.17.0</version>
+      <scope>test</scope>
+    </dependency>
+    <!-- [END_EXCLUDE] -->
 
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>exec-maven-plugin</artifactId>
-                    <version>1.4.0</version>
-                    <configuration>
-                        <cleanupDaemonThreads>false</cleanupDaemonThreads>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-    </build>
+    <!---[START DATAFLOW] -->
+    <!-- Adds a dependency on a specific version of the Dataflow SDK. -->
+    <dependency>
+        <groupId>com.google.cloud.dataflow</groupId>
+        <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
+        <version>2.1.0</version>
+    </dependency>  
+    <!---[END DATAFLOW] -->
 
-    <dependencies>
-        <!-- Compile/runtime dependencies -->
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-1.0-sdk</artifactId>
-            <version>${appengine.target.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-            <version>2.5</version>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>jstl</groupId>
-            <artifactId>jstl</artifactId>
-            <version>1.2</version>
-        </dependency>
+    <!--[START GCP APIs] -->
+    <!-- Dependencies below this line are specific dependencies needed by the examples code. -->
+    <dependency>
+        <groupId>com.google.api-client</groupId>
+        <artifactId>google-api-client</artifactId>
+        <version>1.22.0</version>
+        <exclusions>
+            <!-- Exclude an old version of guava that is being pulled
+                 in by a transitive dependency of google-api-client -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-jdk5</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 
-        <!-- Test Dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-all</artifactId>
-            <version>1.10.19</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-testing</artifactId>
-            <version>${appengine.target.version}</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>com.google.appengine</groupId>
-            <artifactId>appengine-api-stubs</artifactId>
-            <version>${appengine.target.version}</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+        <groupId>com.google.apis</groupId>
+        <artifactId>google-api-services-bigquery</artifactId>
+        <version>v2-rev295-1.22.0</version>
+        <exclusions>
+            <!-- Exclude an old version of guava that is being pulled
+                 in by a transitive dependency of google-api-client -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-jdk5</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 
-        <!-- Adds a dependency on a specific version of the Dataflow SDK. -->
-        <dependency>
-            <groupId>com.google.cloud.dataflow</groupId>
-            <artifactId>google-cloud-dataflow-java-sdk-all</artifactId>
-            <version>2.1.0</version>
-        </dependency>
+    <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client</artifactId>
+        <version>1.22.0</version>
+        <exclusions>
+            <!-- Exclude an old version of guava that is being pulled
+                 in by a transitive dependency of google-api-client -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-jdk5</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 
-        <!-- Dependencies below this line are specific dependencies needed by the examples code. -->
-        <dependency>
-            <groupId>com.google.api-client</groupId>
-            <artifactId>google-api-client</artifactId>
-            <version>1.22.0</version>
-            <exclusions>
-                <!-- Exclude an old version of guava that is being pulled
-                     in by a transitive dependency of google-api-client -->
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava-jdk5</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+        <groupId>com.google.apis</groupId>
+        <artifactId>google-api-services-pubsub</artifactId>
+        <version>v1-rev10-1.22.0</version>
+        <exclusions>
+            <!-- Exclude an old version of guava that is being pulled
+                 in by a transitive dependency of google-api-client -->
+            <exclusion>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava-jdk5</artifactId>
+            </exclusion>
+        </exclusions>
+    </dependency>
 
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-bigquery</artifactId>
-            <version>v2-rev295-1.22.0</version>
-            <exclusions>
-                <!-- Exclude an old version of guava that is being pulled
-                     in by a transitive dependency of google-api-client -->
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava-jdk5</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+        <groupId>joda-time</groupId>
+        <artifactId>joda-time</artifactId>
+        <version>2.4</version>
+    </dependency>
 
-        <dependency>
-            <groupId>com.google.http-client</groupId>
-            <artifactId>google-http-client</artifactId>
-            <version>1.22.0</version>
-            <exclusions>
-                <!-- Exclude an old version of guava that is being pulled
-                     in by a transitive dependency of google-api-client -->
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava-jdk5</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
+    <dependency>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>20.0</version>
+    </dependency>  
+    <!--[END GCP APIs] -->
 
-        <dependency>
-            <groupId>com.google.apis</groupId>
-            <artifactId>google-api-services-pubsub</artifactId>
-            <version>v1-rev10-1.22.0</version>
-            <exclusions>
-                <!-- Exclude an old version of guava that is being pulled
-                     in by a transitive dependency of google-api-client -->
-                <exclusion>
-                    <groupId>com.google.guava</groupId>
-                    <artifactId>guava-jdk5</artifactId>
-                </exclusion>
-            </exclusions>
-        </dependency>
-
-        <dependency>
-            <groupId>joda-time</groupId>
-            <artifactId>joda-time</artifactId>
-            <version>2.4</version>
-        </dependency>
-
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-        </dependency>
-
-        <!-- Add slf4j API frontend binding with JUL backend -->
+    <!-- ADDITIONAL GCP -->
         <dependency>
             <groupId>org.slf4j</groupId>
             <artifactId>slf4j-api</artifactId>
@@ -305,15 +196,20 @@
             <version>1.3</version>
         </dependency>
 
-        <!--<dependency>-->
-            <!--<groupId>junit</groupId>-->
-            <!--<artifactId>junit</artifactId>-->
-            <!--<version>4.12</version>-->
-        <!--</dependency>-->
-        <dependency>
-            <groupId>org.conscrypt</groupId>
-            <artifactId>conscrypt-openjdk-uber</artifactId>
-            <version>1.0.1</version>
-        </dependency>
-    </dependencies>
+  </dependencies>
+
+  <build>
+    <!-- for hot reload of the web application-->
+    <outputDirectory>${project.build.directory}/${project.build.finalName}/WEB-INF/classes</outputDirectory>
+    <plugins>
+      <!-- [START cloudplugin] -->
+      <plugin>
+        <groupId>com.google.cloud.tools</groupId>
+        <artifactId>appengine-maven-plugin</artifactId>
+        <version>1.3.1</version>
+      </plugin>
+      <!-- [END cloudplugin] -->
+    </plugins>
+  </build>
 </project>
+<!-- [END pom] -->
