@@ -104,6 +104,7 @@ public class DataPipeline {
         MyOptions options = PipelineOptionsFactory.as(MyOptions.class);
         options.setJobName("cloud-pipeline-101");
         options.setProject("***REMOVED***");
+        options.setTempLocation("gs://***REMOVED***/staging");
         options.setStagingLocation("gs://***REMOVED***/staging");
         options.setInputFile("gs://***REMOVED***/csv/products.csv");
         options.setOutput("***REMOVED***.demo_dataset1.data_pipeline1");
