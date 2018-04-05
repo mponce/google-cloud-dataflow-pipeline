@@ -37,6 +37,12 @@ public class DataPipeline implements Runnable {
     private static final Logger logger = LoggerFactory.getLogger(DataPipeline.class);
     private static final String FIELD_SEPARATOR = ",";
 
+    private String jobId = "data-pipeline-job";
+
+    public void setJobId(String jobId) {
+        this.jobId = jobId;
+    }
+
     public interface MyOptions extends DataflowPipelineOptions {
         /**
          * Specify the location of CSV files
@@ -105,7 +111,7 @@ public class DataPipeline implements Runnable {
 
         // Google Cloud DataFlow Options
         MyOptions options = PipelineOptionsFactory.as(MyOptions.class);
-        options.setJobName("cloud-pipeline-101");
+        options.setJobName(this.jobId);
         options.setProject("***REMOVED***");
         options.setTempLocation("gs://***REMOVED***/staging");
         options.setStagingLocation("gs://***REMOVED***/staging");
