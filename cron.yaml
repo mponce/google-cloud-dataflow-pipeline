@@ -1,0 +1,4 @@
+cron:
+- description: "hourly data loading"
+  url: /schedule/run
+  schedule: every 1 hours
