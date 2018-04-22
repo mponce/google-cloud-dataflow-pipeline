@@ -34,10 +34,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class DataPipeline implements Runnable {
+
     private static final Logger logger = LoggerFactory.getLogger(DataPipeline.class);
     private static final String FIELD_SEPARATOR = ",";
 
-    private String jobId = "data-pipeline-job";
+    // FIXME: Replace with your GCP Options
+    private static final String GCP_PROJECT_ID = "***REMOVED***";
+    private static final String GCP_BIG_QUERY_DATASET = "demo_dataset1";
+    private static final String GCP_BIG_QUERY_TABLE = "data_pipeline1";
+
+    private String jobId = "cloud-pipeline-job";
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
@@ -91,7 +97,7 @@ public class DataPipeline implements Runnable {
         // BigQuery output table definition
         static TableSchema getSchema(){
             logger.info("Getting BigQuery TableSchema");
-            List<TableFieldSchema> fields = new ArrayList<>();
+            List<TableFieldSchema> fields = new ArrayList<TableFieldSchema>();
             fields.add(new TableFieldSchema().setName("ID").setType("STRING"));
             fields.add(new TableFieldSchema().setName("DESCRIPTION").setType("STRING"));
             fields.add(new TableFieldSchema().setName("PRICE").setType("STRING"));
@@ -112,11 +118,11 @@ public class DataPipeline implements Runnable {
         // Google Cloud DataFlow Options
         MyOptions options = PipelineOptionsFactory.as(MyOptions.class);
         options.setJobName(this.jobId);
-        options.setProject("***REMOVED***");
-        options.setTempLocation("gs://***REMOVED***/staging");
-        options.setStagingLocation("gs://***REMOVED***/staging");
-        options.setInputFile("gs://***REMOVED***/csv/products.csv");
-        options.setOutput("***REMOVED***:demo_dataset1.data_pipeline1");
+        options.setProject(GCP_PROJECT_ID);
+        options.setTempLocation("gs://" + GCP_PROJECT_ID + "/staging");
+        options.setStagingLocation("gs://" + GCP_PROJECT_ID + "/staging");
+        options.setInputFile("gs://" + GCP_PROJECT_ID + "/csv/products.csv");
+        options.setOutput(GCP_PROJECT_ID + ":" + GCP_BIG_QUERY_DATASET + "." + GCP_BIG_QUERY_TABLE);
         options.setRunner(DataflowRunner.class);
 
         // Create the Pipeline with the specified options.
