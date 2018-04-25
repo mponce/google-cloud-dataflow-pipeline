@@ -39,11 +39,11 @@ public class DataPipeline implements Runnable {
     private static final String FIELD_SEPARATOR = ",";
 
     // FIXME: Replace with your GCP Options
-    private static final String GCP_PROJECT_ID = "***REMOVED***";
-    private static final String GCP_BIG_QUERY_DATASET = "demo_dataset1";
-    private static final String GCP_BIG_QUERY_TABLE = "data_pipeline1";
+    private static final String GCP_PROJECT_ID = "**REPLACE-ME**";
+    private static final String GCP_BIG_QUERY_DATASET = "**REPLACE-ME**";
+    private static final String GCP_BIG_QUERY_TABLE = "**REPLACE-ME**";
 
-    private String jobId = "cloud-pipeline-job";
+    private String jobId = "**REPLACE-ME**";
 
     public void setJobId(String jobId) {
         this.jobId = jobId;
