@@ -75,3 +75,18 @@ Login to GCP console under **DataFlow** service create a new job from *Custom Te
 
 If all goes well you should be able to see the Job status (running, processed etc.) and options to see the Job *LOGS*.
 
+### Running as Scheduled Job
+
+Optionally create a web app to call the pipeline on scheduled basis. For this review ```DataPipeline``` class and update the GCP properties.
+
+To deploy the servlet to App Engine run:
+
+```
+mvn appengine:deploy
+````
+
+Modify the file ```cron.yaml``` to adjust the scheduling intervals to call the ```/schedule/url``` url that is mapped to the ```SchedulingServlet.java``` which runs ```DataPipeline``` class.
+
+
+
+
